@@ -6,6 +6,7 @@ from cryptography.fernet import Fernet
 
 DEFAULT_SALT_FILE_NAME = "FolderKey.key"
 PASSWORD_HASHER = PasswordHasher(hash_len=24)
+ENCRYPTED_FILE_EXTENSION = ".enc"
 
 
 def write_to_file(filename: str, data: bytes) -> None:
@@ -71,7 +72,7 @@ def encrypt_file(
     fernet = Fernet(fernet_key)
     data_to_encrypt = read_file_data(filepath)
     encrypted_data = fernet.encrypt(data_to_encrypt)
-    output_file = f"{filename}.enc"
+    output_file = f"{filename}{ENCRYPTED_FILE_EXTENSION}"
     write_to_file(os.path.join(output_directory, output_file), encrypted_data)
 
 
@@ -79,7 +80,7 @@ def decrypt_file(filepath: str, filename: str, fernet_key: bytes, dirname: str):
     fernet = Fernet(fernet_key)
     data_to_decrypt = read_file_data(filepath)
     decrypted_data = fernet.decrypt(data_to_decrypt)
-    output_file = f"{filename.replace('.enc', '')}"
+    output_file = f"{filename.replace(ENCRYPTED_FILE_EXTENSION, '')}"
     write_to_file(os.path.join(dirname, output_file), decrypted_data)
 
 
@@ -128,15 +129,17 @@ def decrypt_data(dirname: str, password: str, **kwargs):
 
     filename = kwargs.get("filename")
     if filename:
-        return decrypt_file(
-            os.path.join(dirname, filename), filename, fernet_key, dirname
+        return (
+            decrypt_file(os.path.join(dirname, filename), filename, fernet_key, dirname)
+            if filename.endswith(ENCRYPTED_FILE_EXTENSION)
+            else None
         )
 
     for file in os.listdir(dirname):
         if not os.path.isfile(os.path.join(dirname, file)):
             continue
 
-        if not file.endswith(".enc"):
+        if not file.endswith(ENCRYPTED_FILE_EXTENSION):
             continue
 
         decrypt_file(os.path.join(dirname, file), file, fernet_key, dirname)
