@@ -20,7 +20,7 @@ source venv/bin/activate
 
 ```sh
 pip install --upgrade pip
-pip install -r requirements.txt
+pip install -r requirements/base.txt
 ```
 
 ### Notes
