@@ -107,7 +107,7 @@ def encrypt_data(dirname: str, password: str, **kwargs):
 
     extensions = kwargs.get("extensions")
     for file in os.listdir(dirname):
-        if not os.path.isfile(file):
+        if not os.path.isfile(os.path.join(dirname, file)):
             continue
 
         if extensions and not any(file.endswith(extension) for extension in extensions):
