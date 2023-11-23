@@ -1,10 +1,15 @@
 import os
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
-# from getpass import getpass
+from getpass import getpass
 
 from cryptography.fernet import InvalidToken
 
-from utils import decrypt_data, encrypt_data, get_file_directory_details, read_file_data
+from .utils import (
+    decrypt_data,
+    encrypt_data,
+    get_file_directory_details,
+    read_file_data,
+)
 
 parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
 
@@ -45,7 +50,7 @@ parser.add_argument(
 
 
 def main():
-    # password = getpass()
+    password = getpass()
     args = vars(parser.parse_args())
 
     data = {
@@ -70,26 +75,20 @@ def main():
             return
         salt = read_file_data(salt_filepath)
 
+    data = {
+        "dirname": base_dir,
+        "password": password,
+        "filename": filename,
+        "salt": salt,
+        "salt_filename": args.get("salt_filename"),
+    }
+
     if args.get("action") == "encrypt":
-        data = {
-            "dirname": base_dir,
-            "password": "password",
-            "filename": filename,
-            "salt": salt,
-            "salt_filename": args.get("salt_filename"),
-            "extensions": args.get("extensions").split(","),
-        }
+        data["extensions"] = args.get("extensions").split(",")
         encrypt_data(**data)
         return
 
     if args.get("action") == "decrypt":
-        data = {
-            "dirname": base_dir,
-            "password": "password",
-            "filename": filename,
-            "salt": salt,
-            "salt_filename": args.get("salt_filename"),
-        }
         try:
             decrypt_data(**data)
         except InvalidToken:
