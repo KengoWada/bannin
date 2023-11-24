@@ -115,6 +115,12 @@ pip install --upgrade pip
 pip install -r requirements/dev.txt
 ```
 
+- Add `pre-commit` hooks
+
+```sh
+pre-commit install
+```
+
 - Create your branch from the `main` branch
 
 ```sh
