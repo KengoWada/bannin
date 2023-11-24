@@ -7,7 +7,7 @@ from bannin.utils import (
     DEFAULT_SALT_FILE_NAME,
     generate_fernet_key,
     generate_salt,
-    get_file_directory_details,
+    get_directory_and_filename,
     read_file_data,
     write_to_file,
 )
@@ -90,34 +90,36 @@ class TestSaltAndFernetKeyGeneration(TestCase):
 
 class TestGetDirectoryDetails(TestCase):
     def setUp(self):
-        self.directory = "./tests/dummy_files"
+        self.directory = "./tests/dummy_files/"
         self.filename = "sample.txt"
         self.filepath = os.path.join(self.directory, self.filename)
 
     def test_get_file_directory_details(self):
-        data = {
-            "directory": self.directory,
-            "filename": self.filename,
-            "filepath": self.filepath,
-        }
-        directory, filename = get_file_directory_details(data)
-        self.assertEqual(directory, self.directory)
+        directory, filename = get_directory_and_filename(filepath=self.filepath)
+        self.assertEqual(directory, self.directory[:-1])
         self.assertEqual(filename, self.filename)
         self.assertEqual(os.path.join(directory, filename), self.filepath)
 
-        directory, filename = get_file_directory_details({})
+        directory, filename = get_directory_and_filename(
+            directory=self.directory, filename=self.filename
+        )
+        self.assertEqual(directory, self.directory[:-1])
+        self.assertEqual(filename, self.filename)
+        self.assertEqual(os.path.join(directory, filename), self.filepath)
+
+        directory, filename = get_directory_and_filename()
         self.assertIsNone(filename)
         self.assertEqual(directory, os.getcwd())
 
     def test_get_file_directory_details_invalid_data(self):
         data = {"directory": "./fake_dir"}
         with self.assertRaises(ValueError):
-            get_file_directory_details(data)
+            get_directory_and_filename(**data)
 
         data = {"directory": self.directory, "filename": "fake.file"}
         with self.assertRaises(ValueError):
-            get_file_directory_details(data)
+            get_directory_and_filename(**data)
 
         data = {"filepath": os.path.join("./fake_dir", "fake.file")}
         with self.assertRaises(ValueError):
-            get_file_directory_details(data)
+            get_directory_and_filename(**data)

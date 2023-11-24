@@ -4,12 +4,7 @@ from getpass import getpass
 
 from cryptography.fernet import InvalidToken
 
-from .utils import (
-    decrypt_data,
-    encrypt_data,
-    get_file_directory_details,
-    read_file_data,
-)
+from .utils import Bannin, get_directory_and_filename, read_file_data
 
 parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
 
@@ -50,49 +45,52 @@ parser.add_argument(
 
 
 def main():
-    password = getpass()
     args = vars(parser.parse_args())
+    password = getpass()
 
-    data = {
-        "directory": args.get("directory"),
-        "filename": args.get("filename"),
-        "filepath": args.get("filepath"),
-    }
+    directory = args.get("directory")
+    filename = args.get("filename")
+    filepath = args.get("filepath")
+    salt_filepath = args.get("salt_filepath")
+    salt_filename = args.get("salt_filename")
+    extensions = args.get("extensions").split(",")
+    salt = None
+
     try:
-        base_dir, filename = get_file_directory_details(data)
+        directory_, filename_ = get_directory_and_filename(
+            directory=directory, filename=filename, filepath=filepath
+        )
     except ValueError as error:
         print(str(error))
         return
 
-    if base_dir[-1] == "/":
-        base_dir = base_dir[:-1]
-
-    salt = None
-    salt_filepath = args.get("salt_filepath")
-    if salt_filepath:
+    if salt_filepath is not None:
         if not os.path.isfile(salt_filepath):
             print("Invalid salt file path provided.")
             return
+
         salt = read_file_data(salt_filepath)
 
-    data = {
-        "dirname": base_dir,
-        "password": password,
-        "filename": filename,
-        "salt": salt,
-        "salt_filename": args.get("salt_filename"),
-    }
+    bannin = Bannin(
+        directory=directory_,
+        password=password,
+        filename=filename_,
+        salt=salt,
+        salt_filename=salt_filename,
+        extensions=extensions,
+    )
 
     if args.get("action") == "encrypt":
-        data["extensions"] = args.get("extensions").split(",")
-        encrypt_data(**data)
+        bannin.encrypt()
+        print("Done.")
         return
 
-    if args.get("action") == "decrypt":
-        try:
-            decrypt_data(**data)
-        except InvalidToken:
-            print("Invalid password or salt provided.")
+    try:
+        bannin.decrypt()
+    except InvalidToken:
+        print("Invalid password or salt provided.")
+    else:
+        print("Done.")
 
 
 if __name__ == "__main__":
