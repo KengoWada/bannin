@@ -1,6 +1,6 @@
 # 番人
 
-![Static Badge](https://img.shields.io/badge/python-%3E%3D3.8-green?logoColor=white)
+[![codecov](https://codecov.io/gh/KengoWada/bannin/graph/badge.svg?token=M58B5Y9P1Q)](https://codecov.io/gh/KengoWada/bannin) ![Static Badge](https://img.shields.io/badge/python-%3E%3D3.8-green?logoColor=white)
 
 A python cli app to encrypt and decrypt files.
 
