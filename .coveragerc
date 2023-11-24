@@ -3,6 +3,7 @@ source = .
 omit =
     */tests/*
     */__init__.py
+    bannin/__main__.py
     setup.py
 
 
