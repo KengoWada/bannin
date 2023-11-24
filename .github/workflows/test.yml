@@ -1,5 +1,5 @@
 ---
-name: "Test Bannin"
+name: "test"
 
 on:
   pull_request:
