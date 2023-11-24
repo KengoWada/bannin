@@ -1,6 +1,5 @@
 import base64
 import os
-from typing import Optional
 
 from argon2 import PasswordHasher
 from cryptography.fernet import Fernet
@@ -39,7 +38,7 @@ def generate_fernet_key(password: str, salt: bytes) -> bytes:
     return base64.urlsafe_b64encode(encryption_key)
 
 
-def get_file_directory_details(args: dict) -> tuple[str, Optional[str]]:
+def get_file_directory_details(args: dict) -> tuple:
     """Get base directory and file name."""
     base_dir = os.getcwd()
 
