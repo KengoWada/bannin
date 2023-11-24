@@ -1,5 +1,7 @@
 # 番人
 
+![Static Badge](https://img.shields.io/badge/python-%3E%3D3.8-green?logoColor=white)
+
 A python cli app to encrypt and decrypt files.
 
 > [!WARNING]
@@ -25,8 +27,6 @@ pip install -r requirements/base.txt
 
 ### Notes
 
-- Use python >= 3.10
-
 - The password for encrypting and decrypting has been hard coded to `password` for safety purposes.
 
 - Please use this with caution as you may fail to recover your files if you say forget your password or misplace the `FolderKey.key`.
@@ -50,21 +50,6 @@ pip install -r requirements/base.txt
 ### Using Bannin
 
 - Run all [Getting Started](#getting-started) steps.
-
-- Go to `bannin/__main__.py` and make the following changes
-
-```diff
-- # from getpass import getpass
-+ from getpass import getpass
-
-- # password = getpass()
-+ password = getpass()
-
-- "password": "password",
-+ "password": password,
-```
-
-  **Note**: This will now ask for password before encryption and decryption. Forgetting this password means you won't decrypt any files you encrypted.
 
 - Now install bannin from pip
 
