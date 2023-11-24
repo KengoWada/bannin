@@ -27,8 +27,6 @@ pip install -r requirements/base.txt
 
 ### Notes
 
-- The password for encrypting and decrypting has been hard coded to `password` for safety purposes.
-
 - Please use this with caution as you may fail to recover your files if you say forget your password or misplace the `FolderKey.key`.
 
 - Read through the code to get an understanding of what is being done before using.
