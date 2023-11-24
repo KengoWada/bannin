@@ -1,0 +1,40 @@
+---
+name: "Test Bannin"
+
+on:
+  pull_request:
+  push:
+    branches:
+      - "main"
+
+jobs:
+  build:
+    name: "Test Bannin Utils | ${{ matrix.python-version }} | Ubuntu"
+    runs-on: "ubuntu-20.04"
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - python-version: "3.8"
+          - python-version: "3.9"
+          - python-version: "3.10"
+          - python-version: "3.11"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Dependencies
+        run: |
+          pip install argon2-cffi==23.1.0
+          pip install cryptography==41.0.5
+          pip install pytest
+          pip install coverage
+
+      - name: Run Tests
+        run: coverage run -m pytest
